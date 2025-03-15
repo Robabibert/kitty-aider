@@ -23,16 +23,8 @@ function M.setup(opts)
     local cmd_args = args.fargs
 
     if #cmd_args == 0 then
-      -- Default action: show usage
-      print("Usage: KittyAider <command> [args]")
-      print("Commands:")
-      print("  attach [id] - Attach to aider process (uses telescope if no id provided)")
-      print("  send <command> - Send command to attached aider")
-      print("  add - Add current file to aider")
-      print("  readonly - Mark current file as read-only in aider")
-      print("  drop - Drop current file from aider")
-      print("  dropall - Drop all files from aider")
-      print("  prompt - Open a prompt to send text to aider")
+      -- Default action: show command picker
+      require("kitty_aider.commands").telescope_command_picker()
       return
     end
 
