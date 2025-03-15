@@ -50,4 +50,14 @@ function M.drop_current_file()
   return process.send_command("/drop " .. current_file)
 end
 
+-- Drop all files from aider
+function M.drop_all_files()
+  if not process.is_attached() then
+    utils.notify("No aider process attached. Use :KittyAider attach first.", "error")
+    return false
+  end
+
+  return process.send_command("/drop")
+end
+
 return M

@@ -31,6 +31,7 @@ function M.setup(opts)
       print("  add - Add current file to aider")
       print("  readonly - Mark current file as read-only in aider")
       print("  drop - Drop current file from aider")
+      print("  dropall - Drop all files from aider")
       return
     end
 
@@ -57,6 +58,8 @@ function M.setup(opts)
       M.readonly_current_file()
     elseif subcmd == "drop" then
       M.drop_current_file()
+    elseif subcmd == "dropall" then
+      M.drop_all_files()
     else
       require("kitty_aider.utils").notify("Unknown command: " .. subcmd, "error")
     end
@@ -68,7 +71,7 @@ function M.setup(opts)
 
       if #words == 1 then
         -- Complete the subcommand
-        return { "attach", "send", "add", "readonly", "drop" }
+        return { "attach", "send", "add", "readonly", "drop", "dropall" }
       elseif #words == 2 and words[2] == "attach" then
         -- Could offer process IDs as completion options
         local process = require("kitty_aider.process")
@@ -114,6 +117,10 @@ end
 
 function M.drop_current_file()
   return require("kitty_aider.files").drop_current_file()
+end
+
+function M.drop_all_files()
+  return require("kitty_aider.files").drop_all_files()
 end
 
 return M
