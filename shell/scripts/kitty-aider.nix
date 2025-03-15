@@ -18,6 +18,9 @@ let
           aider_cmd = ".aider-wrapped",
           debug = true,
           notify_level = "debug",
+          integration = {
+            nvim_tree = true,
+          },
         })
 
         -- Test the plugin's functionality
@@ -41,8 +44,9 @@ let
     configure = {
       packages.myPlugins = {
         start = with pkgs.vimPlugins; [
-          nvim-tree-lua
+          harpoon2
           neo-tree-nvim
+          nvim-tree-lua
           telescope-nvim
         ];
       };

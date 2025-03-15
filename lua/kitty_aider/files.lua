@@ -60,4 +60,19 @@ function M.drop_all_files()
   return process.send_command("/drop")
 end
 
+-- Add a file to aider by path
+function M.add_file_by_path(file_path)
+  if not process.is_attached() then
+    utils.notify("No aider process attached. Use :KittyAider attach first.", "error")
+    return false
+  end
+
+  if not file_path or file_path == "" then
+    utils.notify("No file path provided", "error")
+    return false
+  end
+
+  return process.send_command("/add " .. file_path)
+end
+
 return M

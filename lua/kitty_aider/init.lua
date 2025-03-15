@@ -8,6 +8,9 @@ M.version = "0.1.0"
 local default_config = {
   debug = false,
   notify_level = "info",
+  integrations = {
+    nvim_tree = false, -- Set to true to enable nvim-tree integration
+  },
 }
 
 -- Store the user's config
@@ -17,6 +20,11 @@ M.config = vim.deepcopy(default_config)
 function M.setup(opts)
   -- Merge user config with defaults
   M.config = vim.tbl_deep_extend("force", vim.deepcopy(default_config), opts or {})
+
+  -- Add nvim-tree integration if enabled
+  if M.config.integrations.nvim_tree then
+    M.setup_nvim_tree_integration()
+  end
 
   -- Set up any commands, autocmds, etc.
   vim.api.nvim_create_user_command("KittyAider", function(args)
@@ -95,6 +103,31 @@ function M.attach(process_id)
   end
 end
 
+-- Set up nvim-tree integration
+function M.setup_nvim_tree_integration()
+  local has_nvim_tree, api = pcall(require, "nvim-tree.api")
+  if not has_nvim_tree then
+    require("kitty_aider.utils").notify("nvim-tree.lua is required for nvim-tree integration", "error")
+    return
+  end
+
+  -- Function to add current file or tree node to aider
+  M.add_file_to_aider = function()
+    -- Check if we're in nvim-tree buffer
+    local node = api.tree.get_node_under_cursor()
+    if not node or node.type ~= "file" then
+      require("kitty_aider.utils").notify("Not a file node", "warn")
+      return
+    end
+
+    local process = require("kitty_aider.process")
+    process.ensure_attached(function()
+      require("kitty_aider.files").add_file_by_path(node.absolute_path)
+      require("kitty_aider.utils").notify("Added " .. node.name .. " to aider", "info")
+    end)
+  end
+end
+
 -- Function to send command to attached aider process
 function M.send_command(command)
   local process = require("kitty_aider.process")
@@ -126,6 +159,11 @@ function M.prompt()
       require("kitty_aider.process").send_command(input)
     end
   end)
+end
+
+-- Make file operations available through the main module
+M.add_file_by_path = function(file_path)
+  return require("kitty_aider.files").add_file_by_path(file_path)
 end
 
 return M
