@@ -7,7 +7,7 @@ M.version = "0.1.0"
 -- Default configuration
 local default_config = {
   debug = false,
-  notify_level = "info"
+  notify_level = "info",
 }
 
 -- Store the user's config
@@ -28,6 +28,9 @@ function M.setup(opts)
       print("Commands:")
       print("  attach [id] - Attach to aider process (uses telescope if no id provided)")
       print("  send <command> - Send command to attached aider")
+      print("  add - Add current file to aider")
+      print("  readonly - Mark current file as read-only in aider")
+      print("  drop - Drop current file from aider")
       return
     end
 
@@ -48,6 +51,12 @@ function M.setup(opts)
       -- Join all remaining args as the command
       local command = table.concat({ unpack(cmd_args, 2) }, " ")
       M.send_command(command)
+    elseif subcmd == "add" then
+      M.add_current_file()
+    elseif subcmd == "readonly" then
+      M.readonly_current_file()
+    elseif subcmd == "drop" then
+      M.drop_current_file()
     else
       require("kitty_aider.utils").notify("Unknown command: " .. subcmd, "error")
     end
@@ -59,7 +68,7 @@ function M.setup(opts)
 
       if #words == 1 then
         -- Complete the subcommand
-        return { "attach", "send" }
+        return { "attach", "send", "add", "readonly", "drop" }
       elseif #words == 2 and words[2] == "attach" then
         -- Could offer process IDs as completion options
         local process = require("kitty_aider.process")
@@ -92,6 +101,19 @@ end
 function M.send_command(command)
   local process = require("kitty_aider.process")
   return process.send_command(command)
+end
+
+-- File operations
+function M.add_current_file()
+  return require("kitty_aider.files").add_current_file()
+end
+
+function M.readonly_current_file()
+  return require("kitty_aider.files").readonly_current_file()
+end
+
+function M.drop_current_file()
+  return require("kitty_aider.files").drop_current_file()
 end
 
 return M
