@@ -32,6 +32,7 @@ function M.setup(opts)
       print("  readonly - Mark current file as read-only in aider")
       print("  drop - Drop current file from aider")
       print("  dropall - Drop all files from aider")
+      print("  prompt - Open a prompt to send text to aider")
       return
     end
 
@@ -60,6 +61,8 @@ function M.setup(opts)
       M.drop_current_file()
     elseif subcmd == "dropall" then
       M.drop_all_files()
+    elseif subcmd == "prompt" then
+      M.prompt()
     else
       require("kitty_aider.utils").notify("Unknown command: " .. subcmd, "error")
     end
@@ -71,7 +74,7 @@ function M.setup(opts)
 
       if #words == 1 then
         -- Complete the subcommand
-        return { "attach", "send", "add", "readonly", "drop", "dropall" }
+        return { "attach", "send", "add", "readonly", "drop", "dropall", "prompt" }
       elseif #words == 2 and words[2] == "attach" then
         -- Could offer process IDs as completion options
         local process = require("kitty_aider.process")
@@ -121,6 +124,16 @@ end
 
 function M.drop_all_files()
   return require("kitty_aider.files").drop_all_files()
+end
+
+-- Function to prompt for text and send it to aider
+function M.prompt()
+  vim.ui.input({ prompt = "Aider prompt: " }, function(input)
+    if input then
+      -- Send the text directly (not as a command)
+      require("kitty_aider.process").send_command(input)
+    end
+  end)
 end
 
 return M
