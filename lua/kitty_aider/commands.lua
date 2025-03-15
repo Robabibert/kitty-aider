@@ -47,24 +47,43 @@ function M.telescope_command_picker()
         
         -- Execute the selected command
         local kitty_aider = require("kitty_aider")
+        local process = require("kitty_aider.process")
+        
+        -- Handle attach command separately (doesn't need auto-attach)
         if selection.value == "attach" then
           kitty_aider.attach()
-        elseif selection.value == "send" then
+          return
+        end
+        
+        -- For all other commands, ensure we're attached first
+        if selection.value == "send" then
           vim.ui.input({ prompt = "Command to send: " }, function(input)
             if input then
-              kitty_aider.send_command(input)
+              process.ensure_attached(function()
+                kitty_aider.send_command(input)
+              end)
             end
           end)
         elseif selection.value == "add" then
-          kitty_aider.add_current_file()
+          process.ensure_attached(function()
+            kitty_aider.add_current_file()
+          end)
         elseif selection.value == "readonly" then
-          kitty_aider.readonly_current_file()
+          process.ensure_attached(function()
+            kitty_aider.readonly_current_file()
+          end)
         elseif selection.value == "drop" then
-          kitty_aider.drop_current_file()
+          process.ensure_attached(function()
+            kitty_aider.drop_current_file()
+          end)
         elseif selection.value == "dropall" then
-          kitty_aider.drop_all_files()
+          process.ensure_attached(function()
+            kitty_aider.drop_all_files()
+          end)
         elseif selection.value == "prompt" then
-          kitty_aider.prompt()
+          process.ensure_attached(function()
+            kitty_aider.prompt()
+          end)
         end
       end)
       return true

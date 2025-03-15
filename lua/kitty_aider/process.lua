@@ -148,4 +148,76 @@ function M.telescope_picker()
     :find()
 end
 
+-- Try to automatically attach to an aider process
+function M.ensure_attached(callback)
+  -- If already attached, just run the callback
+  if M.is_attached() then
+    if callback then callback() end
+    return true
+  end
+
+  local processes = M.list_aider_processes()
+  
+  if #processes == 0 then
+    utils.notify("No aider processes found in kitty terminal", "warn")
+    return false
+  elseif #processes == 1 then
+    -- If there's only one process, attach to it automatically
+    if M.attach(processes[1].id) and callback then
+      callback()
+      return true
+    end
+  else
+    -- If there are multiple processes, use the picker
+    -- We need to modify the picker to run the callback after selection
+    local pickers = require("telescope.pickers")
+    local finders = require("telescope.finders")
+    local conf = require("telescope.config").values
+    local actions = require("telescope.actions")
+    local action_state = require("telescope.actions.state")
+
+    local items = {}
+    for _, proc in ipairs(processes) do
+      table.insert(items, {
+        id = proc.id,
+        title = proc.title,
+        display = string.format("[ID: %s] %s", proc.id, proc.title),
+      })
+    end
+
+    pickers
+      .new({}, {
+        prompt_title = "Aider Processes",
+        finder = finders.new_table({
+          results = items,
+          entry_maker = function(entry)
+            return {
+              value = entry,
+              display = entry.display,
+              ordinal = entry.display,
+            }
+          end,
+        }),
+        sorter = conf.generic_sorter({}),
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(function()
+            local selection = action_state.get_selected_entry()
+            actions.close(prompt_bufnr)
+
+            -- Attach to the selected process
+            if selection and selection.value then
+              if M.attach(selection.value.id) and callback then
+                callback()
+              end
+            end
+          end)
+          return true
+        end,
+      })
+      :find()
+  end
+  
+  return false
+end
+
 return M
