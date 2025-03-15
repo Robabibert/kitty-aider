@@ -24,13 +24,8 @@ let
         print("Plugin version: " .. kitty_aider.version)
         print("Successfully loaded kitty_aider")
 
-        -- Try starting the plugin
-        local start_ok, start_err = pcall(kitty_aider.start)
-        if start_ok then
-          print("Successfully started kitty_aider")
-        else
-          print("Failed to start kitty_aider: " .. tostring(start_err))
-        end
+        -- Plugin is now automatically set up
+        print("kitty_aider is ready to use")
       else
         print("Failed to load kitty_aider: " .. tostring(kitty_aider))
         print("Check lua/kitty_aider directory structure:")
@@ -45,7 +40,11 @@ let
   customNeovim = pkgs.neovim.override {
     configure = {
       packages.myPlugins = {
-        start = with pkgs.vimPlugins; [ nvim-tree-lua neo-tree-nvim ];
+        start = with pkgs.vimPlugins; [
+          nvim-tree-lua
+          neo-tree-nvim
+          telescope-nvim
+        ];
       };
     };
   };

@@ -14,16 +14,3 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
   once = true,
 })
-
--- Add key mappings
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local config = require("kitty_aider").config
-    if config.mappings.start then
-      vim.keymap.set("n", config.mappings.start, function()
-        require("kitty_aider").start()
-      end, { desc = "Start kitty-aider" })
-    end
-  end,
-  once = true,
-})
