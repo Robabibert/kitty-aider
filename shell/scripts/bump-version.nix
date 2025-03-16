@@ -26,8 +26,12 @@ in pkgs.writers.writeFish "bump-semantic-version" { } # fish
   set CHANGELOG "$GIT_ROOT/CHANGELOG.md"
 
 
-  # Update changelog
-  ${pkgs.git-cliff}/bin/git-cliff --bump --output $CHANGELOG --repository $GIT_ROOT
+
+  set NEW_CHANGELOG (mktemp)
+  set OLD_CHANGELOG (mktemp)
+  cat $CHANGELOG > $OLD_CHANGELOG
+  ${pkgs.git-cliff}/bin/git-cliff --bump --unreleased  --repository $GIT_ROOT > $NEW_CHANGELOG
+  cat $NEW_CHANGELOG $OLD_CHANGELOG > $CHANGELOG
 
   # Commit changes
   git add $CHANGELOG 
