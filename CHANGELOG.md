@@ -1,3 +1,12 @@
+## [0.1.1](https://github.com/Robabibert/kitty-aider/compare/v0.1.0..v0.1.1) - 2025-03-16
+
+### Changed
+- Prepend new changelog content without overriding
+- Update CHANGELOG.md with project changes and version details
+
+### Removed
+- Remove head and footer from cliff.toml
+
 ## [0.1.0](https://github.com/Robabibert/kitty-aider/compare/v0.0.0..v0.1.0) - 2025-03-16
 
 ### Added
