@@ -16,9 +16,12 @@ in pkgs.mkShell {
 
     scripts.kitty-aider
     scripts.unit-test
+    git-cliff
   ];
 
-  shellHook = ''
     exec fish;
-  '';
+  shellHook = # bash
+      git config --global alias.cliff git-cliff
+      git config --global alias.bump !${scripts.bump-version}
+    '';
 }
