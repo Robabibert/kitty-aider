@@ -3,5 +3,5 @@
 
 rec {
   kitty-aider = import ./kitty-aider.nix { inherit pkgs; };
-  tests = import ./tests.nix { inherit pkgs kitty-aider; };
+  unit-test = import ./unit-test.nix { inherit pkgs kitty-aider; };
 }

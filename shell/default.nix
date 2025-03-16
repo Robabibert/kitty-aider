@@ -15,7 +15,7 @@ in pkgs.mkShell {
     nodejs # For some test runners
 
     scripts.kitty-aider
-    scripts.tests
+    scripts.unit-test
   ];
 
   shellHook = ''
