@@ -19,9 +19,11 @@ in pkgs.mkShell {
     git-cliff
   ];
 
-    exec fish;
   shellHook = # bash
+    ''
       git config --global alias.cliff git-cliff
       git config --global alias.bump !${scripts.bump-version}
+
+      exec fish -C "source ${scripts.init-fish}/bin/init-fish";
     '';
 }
