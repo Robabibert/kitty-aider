@@ -3,7 +3,6 @@ let scripts = import ./scripts { inherit pkgs; };
 in pkgs.mkShell {
   buildInputs = with pkgs; [
     # Core
-    neovim
     lua
     luajit
     luarocks
