@@ -35,6 +35,7 @@ let
     configure = {
       packages.myPlugins = {
         start = with pkgs.vimPlugins; [
+          plenary-nvim
           harpoon2
           neo-tree-nvim
           nvim-tree-lua
