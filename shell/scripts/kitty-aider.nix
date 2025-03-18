@@ -7,8 +7,6 @@ let
       package.path = git_root .. "/lua/?.lua;" .. git_root .. "/lua/?/init.lua;" .. package.path
 
       -- Print diagnostic information
-      print("Loading kitty_aider from: " .. git_root)
-      print("Current package.path: " .. package.path)
 
       -- Try to load and setup kitty_aider
       local ok, kitty_aider = pcall(require, "kitty_aider")
@@ -22,13 +20,6 @@ let
             nvim_tree = true,
           },
         })
-
-        -- Test the plugin's functionality
-        print("Plugin version: " .. kitty_aider.version)
-        print("Successfully loaded kitty_aider")
-
-        -- Plugin is now automatically set up
-        print("kitty_aider is ready to use")
       else
         print("Failed to load kitty_aider: " .. tostring(kitty_aider))
         print("Check lua/kitty_aider directory structure:")
@@ -55,6 +46,5 @@ let
 in pkgs.writers.writeFishBin "kitty-aider" # fish
 ''
   set GIT_ROOT (git rev-parse --show-toplevel)
-  echo "Starting Neovim with kitty_aider plugin from $GIT_ROOT"
   ${customNeovim}/bin/nvim --cmd "lua vim.opt.rtp:append('$GIT_ROOT')" -u ${luaInit} $argv
 ''
